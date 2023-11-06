@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
-
+using Pathfinding;
 using ProceduralNoiseProject;
 
 namespace SimpleProceduralTerrainProject
@@ -81,6 +81,8 @@ namespace SimpleProceduralTerrainProject
             Random.InitState(seed);
             m_seed = Random.Range(0, 100);
             InitializeTerrain();
+
+            
         }
 
         private void Update()
@@ -254,6 +256,8 @@ namespace SimpleProceduralTerrainProject
                     RemoveBaseCamps(baseCamps);
                     SpawnBaseCamps();
                 }
+
+                
             }
         }
 

@@ -420,44 +420,13 @@ namespace Pathfinding {
 			}
 		}
 
-		/// <summary>
-		/// State of the path in the pathfinding pipeline.
-		/// Deprecated: Use the <see cref="Pathfinding.Path.PipelineState"/> property instead
-		/// </summary>
-		[System.Obsolete("Use the 'PipelineState' property instead")]
-		public PathState GetState () {
-			return PipelineState;
-		}
-
 		/// <summary>Causes the path to fail and sets <see cref="errorLog"/> to msg</summary>
 		public void FailWithError (string msg) {
 			Error();
 			if (errorLog != "") errorLog += "\n" + msg;
 			else errorLog = msg;
 		}
-
-		/// <summary>
-		/// Logs an error.
-		/// Deprecated: Use <see cref="FailWithError"/> instead
-		/// </summary>
-		[System.Obsolete("Use FailWithError instead")]
-		protected void LogError (string msg) {
-			Log(msg);
-		}
-
-		/// <summary>
-		/// Appends a message to the <see cref="errorLog"/>.
-		/// Nothing is logged to the console.
-		///
-		/// Note: If AstarPath.logPathResults is PathLog.None and this is a standalone player, nothing will be logged as an optimization.
-		///
-		/// Deprecated: Use <see cref="FailWithError"/> instead
-		/// </summary>
-		[System.Obsolete("Use FailWithError instead")]
-		protected void Log (string msg) {
-			errorLog += msg;
-		}
-
+		
 		/// <summary>
 		/// Aborts the path because of an error.
 		/// Sets <see cref="error"/> to true.
@@ -597,16 +566,7 @@ namespace Pathfinding {
 			claimInfo.Add(o.ToString() + "\n\nClaimed from:\n" + System.Environment.StackTrace);
 #endif
 		}
-
-		/// <summary>
-		/// Releases the path silently (pooling).
-		/// Deprecated: Use Release(o, true) instead
-		/// </summary>
-		[System.Obsolete("Use Release(o, true) instead")]
-		internal void ReleaseSilent (System.Object o) {
-			Release(o, true);
-		}
-
+		
 		/// <summary>
 		/// Releases a path claim (pooling).
 		/// Removes the claim of the path by the specified object.
