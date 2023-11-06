@@ -1,4 +1,4 @@
-/*using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -288,4 +288,4 @@ public class Following : MonoBehaviour
         foreach (T l in list) text += l.ToString() + ", ";
         Debug.Log(text);
     }
-}*/
+}

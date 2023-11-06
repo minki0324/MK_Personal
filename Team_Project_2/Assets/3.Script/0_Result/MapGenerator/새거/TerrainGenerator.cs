@@ -58,6 +58,9 @@ namespace SimpleProceduralTerrainProject
         public Color m_grassHealthyColor = Color.white;
         public Color m_grassDryColor = Color.white;
 
+        [Header("Road 셋팅")]
+        public Texture2D road;
+
         //Base Settings
         public GameObject[] Base_PreFabs;
         public int Ply_Num;
@@ -80,17 +83,22 @@ namespace SimpleProceduralTerrainProject
             InitializeTerrain();
         }
 
-        void Start()
-        {
-            AstarPath.active.FlushWorkItems();
-            AstarPath.active.Scan();
-        }
-
         private void Update()
         {
             if(Input.GetKeyDown(KeyCode.G))
             {
                 InitializeTerrain();
+            }
+        }
+
+        private void GenerateNavmesh()
+        {
+            NavMeshSurface[] surfaces = FindObjectsOfType<NavMeshSurface>();
+
+            foreach (var s in surfaces)
+            {
+                s.RemoveData();
+                s.BuildNavMesh();
             }
         }
 
@@ -143,8 +151,7 @@ namespace SimpleProceduralTerrainProject
                     FillDetailMap(m_terrain[x, z], x, z);
                 }
             }
-            // SpawnBaseCamps();
-            RemoveTreesFromBases();
+            SpawnBaseCamps();
 
             //Set the neighbours of terrain to remove seams.
             for (int x = 0; x < m_tilesX; x++)
@@ -168,13 +175,13 @@ namespace SimpleProceduralTerrainProject
             }
         }
 
-       /* void SpawnBaseCamps()
+        void SpawnBaseCamps()
         {
             int numPlayers = Ply_Num; // 플레이어 수
             int maxAttempts = 100; // 최대 시도 횟수, 무한 루프 방지를 위해 설정
             List<GameObject> baseCamps = new List<GameObject>();
 
-           
+
             for (int i = 0; i < numPlayers; i++)
             {
                 bool validPositionFound = false;
@@ -182,7 +189,7 @@ namespace SimpleProceduralTerrainProject
 
                 for (int attempt = 0; attempt < maxAttempts; attempt++)
                 {
-                    // 중앙에서 250x250 범위 내의 랜덤한 위치 생성
+                    // 중앙에서 200x200 범위 내의 랜덤한 위치 생성
                     float posX = Random.Range(-200f, 200f);
                     float posZ = Random.Range(-200f, 200f);
 
@@ -194,8 +201,8 @@ namespace SimpleProceduralTerrainProject
                     if (terrainIndexX >= 0 && terrainIndexX < m_tilesX && terrainIndexZ >= 0 && terrainIndexZ < m_tilesZ)
                     {
                         Terrain terrain = m_terrain[terrainIndexX, terrainIndexZ];
-                        
-                    
+
+
                         baseCampPosition = new Vector3(posX, 10, posZ);
                         bool tooCloseToOtherBases = false;
 
@@ -219,8 +226,8 @@ namespace SimpleProceduralTerrainProject
                 if (validPositionFound)
                 {
                     // 베이스 캠프 소환
-                    GameObject baseCamp =  Instantiate(Base_PreFabs[i % Base_PreFabs.Length], baseCampPosition, Quaternion.identity);
-                                       
+                    GameObject baseCamp = Instantiate(Base_PreFabs[i % Base_PreFabs.Length], baseCampPosition, Quaternion.identity);
+
                     baseCamps.Add(baseCamp);
                     baseCampPositions.Add(baseCampPosition);
                     // 베이스 캠프를 원점을 바라보도록 회전 설정
@@ -248,7 +255,7 @@ namespace SimpleProceduralTerrainProject
                     SpawnBaseCamps();
                 }
             }
-        }*/
+        }
 
         void RemoveBaseCamps(List<GameObject> baseCamps)
         {
@@ -260,41 +267,6 @@ namespace SimpleProceduralTerrainProject
             baseCamps.Clear(); // 베이스 캠프 목록 초기화
             baseCampPositions.Clear(); // 베이스 캠프 위치 목록 초기화
         }
-
-        void RemoveTreesFromBases()
-        {
-            // 소환된 베이스 캠프 위치에서 나무 제거
-            foreach (Vector3 baseCampPosition in baseCampPositions)
-            {
-                // 베이스 캠프가 위치한 테레인 찾기
-                int x = (int)(baseCampPosition.x / m_terrainSize);
-                int z = (int)(baseCampPosition.z / m_terrainSize);
-                Terrain terrain = m_terrain[x, z];
-
-                // 베이스 캠프 주변의 나무 제거
-                RemoveTrees(terrain, baseCampPosition.x, baseCampPosition.z, 10);
-            }
-        }
-
-        void RemoveTrees(Terrain terrain, float posX, float posZ, float radius)
-        {
-            List<TreeInstance> trees = new List<TreeInstance>(terrain.terrainData.treeInstances);
-            Vector3 terrainPosition = terrain.transform.position;
-            float terrainSize = terrain.terrainData.size.x;
-
-            for (int i = trees.Count - 1; i >= 0; i--)
-            {
-                Vector3 treeWorldPosition = Vector3.Scale(trees[i].position, terrain.terrainData.size) + terrainPosition;
-
-                if (Vector3.Distance(new Vector3(posX, 0, posZ), new Vector3(treeWorldPosition.x, 0, treeWorldPosition.z)) < radius)
-                {
-                    trees.RemoveAt(i);
-                }
-            }
-
-            terrain.terrainData.treeInstances = trees.ToArray();
-        }
-
 
         void CreateProtoTypes()
         {
@@ -328,6 +300,8 @@ namespace SimpleProceduralTerrainProject
                 m_detailProtoTypes[i].dryColor = m_grassDryColor;
             }
         }
+
+
 
         void FillHeights(float[,] htmap, int tileX, int tileZ)
         {

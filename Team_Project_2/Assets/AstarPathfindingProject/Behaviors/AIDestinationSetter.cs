@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 namespace Pathfinding {
 	/// <summary>
 	/// 특정한 객체의 위치로 AI의 목적지를 설정합니다.
@@ -18,12 +19,10 @@ namespace Pathfinding {
 		/// <summary>The object that the AI should move to</summary>
 		public Transform target;
 		IAstarAI ai;
-		
 
 		void OnEnable () {
 			ai = GetComponent<IAstarAI>();
 			GameObject player = GameObject.Find("Player");
-			target = player.transform;
 			// 경로를 검색하기 직전에 목적지를 업데이트합니다.
 			// 이론적으로 이것으로 충분하지만, 이 스크립트는 디버깅을 위해 사용되며
 			// 다른 스크립트에서 다른 용도로 사용될 수도 있으므로 매 프레임 목적지를 업데이트하는 것이

@@ -1,6 +1,6 @@
 {
     "name": "AstarPathfindingProject",
-    "rootNamespace": "",
+    "rootNamespace": "Astar",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
