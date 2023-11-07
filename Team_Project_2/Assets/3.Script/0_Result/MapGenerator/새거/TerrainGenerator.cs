@@ -8,7 +8,11 @@ using Pathfinding.Util;
 
 namespace SimpleProceduralTerrainProject
 {
-
+    /*
+        1. 랜덤 터레인 생성 (각종 노이즈 로직들 기반으로 랜덤한 높이의 언덕 생성)
+        2. 랜덤 지형으로 생성된 터레인에 랜덤한 위치에 베이스, 플래그 생성
+        3. 베이스 > 플래그로 가는 길 에이스타 알고리즘을 통해 경로를 파악하여 해당 위치에 도로 텍스춰 입히기
+    */
     public class TerrainGenerator : MonoBehaviour
     {
         //Prototypes
@@ -72,7 +76,7 @@ namespace SimpleProceduralTerrainProject
         List<Vector3> baseCampPositions = new List<Vector3>();
 
         public GameObject[] flag;
-        public int flag_Num = 5;
+        public int flag_Num;
         List<Vector3> flagPositions_List = new List<Vector3>();
 
         //Private
@@ -91,7 +95,8 @@ namespace SimpleProceduralTerrainProject
             terrainList = new List<Terrain>();
             InitializeTerrain();
         }
-
+        #region 베이스부터 깃발까지 도로 까는 메소드들
+        // 가장 가까운 깃발 찾는 메소드
         private Vector3? FindNearestFlag(Vector3 position)
         {
             Vector3? nearestFlag = null;
@@ -137,32 +142,21 @@ namespace SimpleProceduralTerrainProject
                         Vector3 startFlag = flagPositions_List[i];
                         Vector3 endFlag = flagPositions_List[j];
 
+                        Debug.Log("i: " + i + ", j: " + j);
+                        Debug.Log("i : " + i + "StartFlag: " + startFlag + " j : " + j +  "EndFlag " + endFlag);
+
                         var path = Pathfinding(startFlag, endFlag);
-                        DrawRoad(path);
+                        if (path != null && path.Count > 0)
+                        {
+                            DrawRoad(path);
+                        }
                     }
                 }
             }
-        }
-
-        private List<Vector3> Pathfinding(Vector3 start, Vector3 end)
-        {
-            NNInfo startNode = AstarPath.active.GetNearest(start);
-            NNInfo endNode = AstarPath.active.GetNearest(end);
-
-            ABPath path = ABPath.Construct(startNode.position, endNode.position);
-           
-            // 경로 계산 시작
-            AstarPath.StartPath(path);
-
-            // 경로 계산이 끝날 때까지 기다립니다.
-            path.BlockUntilCalculated();
-
-            // 경로 상의 점들을 List<Vector3> 형태로 반환합니다.
-            List<Vector3> pathPositions = path.vectorPath;
-
-            Draw.Debug.Polyline(pathPositions, Color.red);
-
-            return pathPositions;
+            for(int i = 0; i < flagPositions_List.Count; i++)
+            {
+                Debug.Log(i + "번째 좌표는 : " + flagPositions_List[i]);
+            }
         }
 
         private void DrawRoad(List<Vector3> pathPositions)
@@ -213,7 +207,46 @@ namespace SimpleProceduralTerrainProject
                 terrainData.SetAlphamaps(0, 0, alphaMap);
             }
         }
-       
+
+        public void initRoad()
+        {
+            AstarPath.active.Scan();
+            foreach (var terrain in terrainList)
+            {
+                FillAlphaMap(terrain.terrainData);
+            }
+
+            // 도로 그리기 메소드 호출
+            // 이를 위해선 먼저 Pathfinding 메소드에서 도로 경로를 생성해야 합니다.
+            FindPathsFromBasesToFlags();
+            FindPathsBetweenFlags();
+        }
+        #endregion
+        #region 길찾기 알고리즘
+        private List<Vector3> Pathfinding(Vector3 start, Vector3 end)
+        {
+            NNInfo startNode = AstarPath.active.GetNearest(start);
+            NNInfo endNode = AstarPath.active.GetNearest(end);
+            Debug.Log(startNode.position);
+            Debug.Log(endNode.position);
+            ABPath path = ABPath.Construct(startNode.position, endNode.position);
+           
+            // 경로 계산 시작
+            AstarPath.StartPath(path);
+            Debug.Log(path.vectorPath.Count);
+
+            // 경로 계산이 끝날 때까지 기다립니다.
+            path.BlockUntilCalculated();
+
+            // 경로 상의 점들을 List<Vector3> 형태로 반환합니다.
+            List<Vector3> pathPositions = path.vectorPath;
+
+            Draw.Debug.Polyline(pathPositions, Color.red);
+
+            return pathPositions;
+        }
+        #endregion
+        #region 랜덤 터레인 생성
         void InitializeTerrain()
         {
             m_groundNoise = new FractalNoise(new PerlinNoise(m_seed, m_groundFrq), 6, 1.0f, 0.1f);
@@ -231,7 +264,6 @@ namespace SimpleProceduralTerrainProject
 
             m_terrain = new Terrain[m_tilesX, m_tilesZ];
 
-            //this will center terrain at origin
             m_offset = new Vector2(-m_terrainSize * m_tilesX * 0.5f, -m_terrainSize * m_tilesZ * 0.5f);
 
             CreateProtoTypes();
@@ -250,7 +282,6 @@ namespace SimpleProceduralTerrainProject
                     terrainData.splatPrototypes = m_splatPrototypes;
                     terrainData.treePrototypes = m_treeProtoTypes;
                     terrainData.detailPrototypes = m_detailProtoTypes;
-
                     FillAlphaMap(terrainData);
 
 
@@ -265,14 +296,13 @@ namespace SimpleProceduralTerrainProject
                     FillTreeInstances(m_terrain[x, z], x, z);
                     FillDetailMap(m_terrain[x, z], x, z);
                     terrainList.Add(m_terrain[x, z]);
+                    m_terrain[x, z].GetComponent<TerrainCollider>().enabled = false;
+                    m_terrain[x, z].GetComponent<TerrainCollider>().enabled = true;
                 }
             }
 
-            SpawnBaseCamps(SpawnFlags(flag_Num, 75f, 50f));
+            SpawnBaseCamps(SpawnFlags(flag_Num, 75f, 45f));
 
-
-
-            //Set the neighbours of terrain to remove seams.
             for (int x = 0; x < m_tilesX; x++)
             {
                 for (int z = 0; z < m_tilesZ; z++)
@@ -294,20 +324,228 @@ namespace SimpleProceduralTerrainProject
             }
         }
 
-        public void initRoad()
+        // 텍스춰
+        void CreateProtoTypes()
         {
-            AstarPath.active.Scan();
-            foreach (var terrain in terrainList)
+            int numSplat = m_splat.Length;
+            int numDetail = m_detail.Length;
+            int numTree = m_tree.Length;
+
+            m_splatPrototypes = new SplatPrototype[numSplat];
+            m_detailProtoTypes = new DetailPrototype[numDetail];
+            m_treeProtoTypes = new TreePrototype[numTree];
+
+            for (int i = 0; i < numSplat; i++)
             {
-                FillAlphaMap(terrain.terrainData);
+                m_splatPrototypes[i] = new SplatPrototype();
+                m_splatPrototypes[i].texture = m_splat[i];
+                m_splatPrototypes[i].tileSize = new Vector2(m_splatTileSizes[i], m_splatTileSizes[i]);
             }
 
-            // 도로 그리기 메소드 호출
-            // 이를 위해선 먼저 Pathfinding 메소드에서 도로 경로를 생성해야 합니다.
-            FindPathsFromBasesToFlags();
-            FindPathsBetweenFlags();
+            for (int i = 0; i < numTree; i++)
+            {
+                m_treeProtoTypes[i] = new TreePrototype();
+                m_treeProtoTypes[i].prefab = m_tree[i];
+            }
+
+            for (int i = 0; i < numDetail; i++)
+            {
+                m_detailProtoTypes[i] = new DetailPrototype();
+                m_detailProtoTypes[i].prototypeTexture = m_detail[i];
+                m_detailProtoTypes[i].renderMode = DetailRenderMode.GrassBillboard;
+                m_detailProtoTypes[i].healthyColor = m_grassHealthyColor;
+                m_detailProtoTypes[i].dryColor = m_grassDryColor;
+            }
         }
 
+        // 높이
+        void FillHeights(float[,] htmap, int tileX, int tileZ)
+        {
+            // 지형의 크기와 높이맵의 크기의 비율을 계산.
+            float ratio = (float)m_terrainSize / (float)m_heightMapSize;
+
+            // 높이맵의 각 픽셀에 대해 반복.
+            for (int x = 0; x < m_heightMapSize; x++)
+            {
+                // 현재 픽셀의 월드 좌표를 계산.
+                for (int z = 0; z < m_heightMapSize; z++)
+                {
+                    float worldPosX = (x + tileX * (m_heightMapSize - 1)) * ratio;
+                    float worldPosZ = (z + tileZ * (m_heightMapSize - 1)) * ratio;
+
+                    float heightMultiplier = animationCurve.Evaluate(htmap[z, x]);
+                    htmap[z, x] = (m_groundFrq + heightMultiplier) * m_groundNoise.Amplitude + m_groundNoise.Sample2D(worldPosX, worldPosZ);
+                }
+            }
+        }
+
+        // 알파맵
+        void FillAlphaMap(TerrainData terrainData)
+        {
+            // m_alphaMapSize x m_alphaMapSize 크기의 2개의 스플랫맵 레이어를 위한 3차원 배열을 생성.
+            float[,,] map = new float[m_alphaMapSize, m_alphaMapSize, 2];
+
+            // 알파맵을 채우기 위해 각 좌표를 순회.
+            for (int x = 0; x < m_alphaMapSize; x++)
+            {
+                for (int z = 0; z < m_alphaMapSize; z++)
+                {
+                    // 지형 좌표를 정규화된 값(0.0 ~ 1.0)으로 변환.
+                    // 이렇게 하면 좌표가 지형의 어느 부분을 가리키는지 쉽게 알 수 있음.
+                    float normX = x * 1.0f / (m_alphaMapSize - 1);
+                    float normZ = z * 1.0f / (m_alphaMapSize - 1);
+
+                    // 정규화된 좌표에서 경사도를 계산. 
+                    // 경사도는 각도로 반환되며, 값의 범위는 0도에서 90도.
+                    float angle = terrainData.GetSteepness(normX, normZ);
+
+                    // 경사도를 알파 블렌딩 값의 범위인 0에서 1 사이의 값으로 변환.
+                    // 각도가 클수록 1에 가까워지고, 각도가 작을수록 0에 가까워짐.
+                    float frac = angle / 90.0f;
+                    map[z, x, 0] = frac;
+                    map[z, x, 1] = 1.0f - frac;
+
+                }
+            }
+            // 테레인 데이터의 알파맵 해상도를 설정.
+            terrainData.alphamapResolution = m_alphaMapSize;
+            // 계산된 알파맵 값을 테레인에 적용.
+            terrainData.SetAlphamaps(0, 0, map);
+        }
+
+        // 나무
+        void FillTreeInstances(Terrain terrain, int tileX, int tileZ)
+        {
+            // 난수 생성기의 시드 값을 0으로 초기화. 
+            // 이렇게 하면 프로그램을 다시 실행할 때마다 동일한 결과를 얻을 수 있습니다.
+            Random.InitState(0);
+
+            // 지형 전체를 순회하면서 트리 인스턴스를 추가.
+            for (int x = 0; x < m_terrainSize; x += m_treeSpacing)
+            {
+                for (int z = 0; z < m_terrainSize; z += m_treeSpacing)
+                {
+                    // 지형의 한 변의 길이에 대한 역수를 계산.
+                    float unit = 1.0f / (m_terrainSize - 1);
+
+                    // 트리의 위치를 무작위로 조정하기 위한 오프셋을 계산.
+                    float offsetX = Random.value * unit * m_treeSpacing;
+                    float offsetZ = Random.value * unit * m_treeSpacing;
+
+                    // 트리의 위치를 정규화된 좌표계로 변환.
+                    float normX = x * unit + offsetX;
+                    float normZ = z * unit + offsetZ;
+
+                    // 경사도를 계산합니다. 이 값은 0도에서 90도 사이.
+                    float angle = terrain.terrainData.GetSteepness(normX, normZ);
+
+                    // 경사도를 0에서 1 사이의 값으로 변환.
+                    float frac = angle / 90.0f;
+
+                    // 경사가 완만한 지역에서만 트리를 심기.
+                    if (frac < 0.5f)
+                    {
+                        // 트리의 월드 좌표를 계산.
+                        float worldPosX = x + tileX * (m_terrainSize - 1);
+                        float worldPosZ = z + tileZ * (m_terrainSize - 1);
+
+                        // 노이즈 함수를 사용하여 트리의 밀도를 결정.
+                        float noise = m_treeNoise.Sample2D(worldPosX, worldPosZ);
+                        float ht = terrain.terrainData.GetInterpolatedHeight(normX, normZ);
+
+                        // 트리의 높이를 지형 데이터에서 가져옴.
+                        if (noise > 0.0f && ht < m_terrainHeight * 0.4f)
+                        {
+                            TreeInstance temp = new TreeInstance();
+                            temp.position = new Vector3(normX, ht, normZ);
+                            temp.prototypeIndex = Random.Range(0, 3);
+                            temp.widthScale = 1;
+                            temp.heightScale = 2;
+                            temp.color = Color.white;
+                            temp.lightmapColor = Color.white;
+
+                            // 트리 인스턴스를 지형에 추가.
+                            terrain.AddTreeInstance(temp);
+                        }
+                    }
+
+                }
+            }
+            // 트리 관련 설정을 지정.
+            terrain.treeDistance = m_treeDistance;
+            terrain.treeBillboardDistance = m_treeBillboardDistance;
+            terrain.treeCrossFadeLength = m_treeCrossFadeLength;
+            terrain.treeMaximumFullLODCount = m_treeMaximumFullLODCount;
+            
+        }
+
+        // 디테일맵
+        void FillDetailMap(Terrain terrain, int tileX, int tileZ)
+        {
+            //each layer is drawn separately so if you have a lot of layers your draw calls will increase 
+            int[,] detailMap0 = new int[m_detailMapSize, m_detailMapSize];
+            int[,] detailMap1 = new int[m_detailMapSize, m_detailMapSize];
+            int[,] detailMap2 = new int[m_detailMapSize, m_detailMapSize];
+
+            float ratio = (float)m_terrainSize / (float)m_detailMapSize;
+
+            Random.InitState(0);
+
+            for (int x = 0; x < m_detailMapSize; x++)
+            {
+                for (int z = 0; z < m_detailMapSize; z++)
+                {
+                    detailMap0[z, x] = 0;
+                    detailMap1[z, x] = 0;
+                    detailMap2[z, x] = 0;
+
+                    float unit = 1.0f / (m_detailMapSize - 1);
+
+                    float normX = x * unit;
+                    float normZ = z * unit;
+
+                    // Get the steepness value at the normalized coordinate.
+                    float angle = terrain.terrainData.GetSteepness(normX, normZ);
+
+                    // Steepness is given as an angle, 0..90 degrees. Divide
+                    // by 90 to get an alpha blending value in the range 0..1.
+                    float frac = angle / 90.0f;
+
+                    if (frac < 0.5f)
+                    {
+                        float worldPosX = (x + tileX * (m_detailMapSize - 1)) * ratio;
+                        float worldPosZ = (z + tileZ * (m_detailMapSize - 1)) * ratio;
+
+                        float noise = m_detailNoise.Sample2D(worldPosX, worldPosZ);
+
+                        if (noise > 0.0f)
+                        {
+                            float rnd = Random.value;
+                            //Randomly select what layer to use
+                            if (rnd < 0.33f)
+                                detailMap0[z, x] = 1;
+                            else if (rnd < 0.66f)
+                                detailMap1[z, x] = 1;
+                            else
+                                detailMap2[z, x] = 1;
+                        }
+                    }
+
+                }
+            }
+            terrain.terrainData.wavingGrassStrength = m_wavingGrassStrength;
+            terrain.terrainData.wavingGrassAmount = m_wavingGrassAmount;
+            terrain.terrainData.wavingGrassSpeed = m_wavingGrassSpeed;
+            terrain.terrainData.wavingGrassTint = m_wavingGrassTint;
+            terrain.detailObjectDensity = m_detailObjectDensity;
+            terrain.detailObjectDistance = m_detailObjectDistance;
+            terrain.terrainData.SetDetailResolution(m_detailMapSize, m_detailResolutionPerPatch);
+            terrain.terrainData.SetDetailLayer(0, 0, 0, detailMap0);
+            terrain.terrainData.SetDetailLayer(0, 0, 1, detailMap1);
+            terrain.terrainData.SetDetailLayer(0, 0, 2, detailMap2);
+        }
+        #endregion
+        #region 깃발, 베이스 생성 메소드
         private List<Vector3> SpawnFlags(int numberOfFlags, float range, float minDistanceBetweenFlags)
         {
             int maxAttempts = 100; // 최대 시도 횟수, 무한 루프 방지를 위해 설정
@@ -324,8 +562,6 @@ namespace SimpleProceduralTerrainProject
                     // 50x50 범위 내의 랜덤한 위치 생성
                     float posX = Random.Range(-range / 2f, range / 2f);
                     float posZ = Random.Range(-range / 2f, range / 2f);
-                    flagPosition = new Vector3(posX, 10, posZ); // 높이는 적절히 조정
-
                     flagPosition = new Vector3(posX, 10, posZ); // 높이는 적절히 조정
 
                     bool tooCloseToOtherFlags = flagPositions.Any(existingPosition => Vector3.Distance(flagPosition, existingPosition) < minDistanceBetweenFlags);
@@ -354,7 +590,6 @@ namespace SimpleProceduralTerrainProject
 
             return flagPositions;
         }
-
 
         void SpawnBaseCamps(List<Vector3> flagPositions)
         {
@@ -385,17 +620,19 @@ namespace SimpleProceduralTerrainProject
 
                         baseCampPosition = new Vector3(posX, 10, posZ);
                         bool tooCloseToOtherBases = false;
+                        bool tooClostToFlag = false;
+
+                        foreach (Vector3 flagPosition in flagPositions_List)
+                        {
+                            if (Vector3.Distance(baseCampPosition, flagPosition) < 100f)
+                            {
+                                tooClostToFlag = true;
+                                break;
+                            }
+                        }
 
                         foreach (Vector3 otherBasePosition in baseCampPositions)
                         {
-                            foreach (Vector3 flagPosition in flagPositions_List)
-                            {
-                                if (Vector3.Distance(baseCampPosition, flagPosition) < 100f)
-                                {
-                                    tooCloseToOtherBases = true;
-                                    break;
-                                }
-                            }
                             if (Vector3.Distance(baseCampPosition, otherBasePosition) < 170f)
                             {
                                 tooCloseToOtherBases = true;
@@ -404,7 +641,7 @@ namespace SimpleProceduralTerrainProject
                         }
 
 
-                        if (!tooCloseToOtherBases)
+                        if (!tooCloseToOtherBases && !tooClostToFlag)
                         {
                             validPositionFound = true;
                             break;
@@ -469,228 +706,7 @@ namespace SimpleProceduralTerrainProject
             flags.Clear(); // 베이스 캠프 목록 초기화
             flagPositions_List.Clear(); // 베이스 캠프 위치 목록 초기화
         }
-
-        void CreateProtoTypes()
-        {
-            int numSplat = m_splat.Length;
-            int numDetail = m_detail.Length;
-            int numTree = m_tree.Length;
-
-            m_splatPrototypes = new SplatPrototype[numSplat];
-            m_detailProtoTypes = new DetailPrototype[numDetail];
-            m_treeProtoTypes = new TreePrototype[numTree];
-
-            for (int i = 0; i < numSplat; i++)
-            {
-                m_splatPrototypes[i] = new SplatPrototype();
-                m_splatPrototypes[i].texture = m_splat[i];
-                m_splatPrototypes[i].tileSize = new Vector2(m_splatTileSizes[i], m_splatTileSizes[i]);
-            }
-
-            for (int i = 0; i < numTree; i++)
-            {
-                m_treeProtoTypes[i] = new TreePrototype();
-                m_treeProtoTypes[i].prefab = m_tree[i];
-            }
-
-            for(int i = 0; i < numDetail; i++)
-            {
-                m_detailProtoTypes[i] = new DetailPrototype();
-                m_detailProtoTypes[i].prototypeTexture = m_detail[i];
-                m_detailProtoTypes[i].renderMode = DetailRenderMode.GrassBillboard;
-                m_detailProtoTypes[i].healthyColor = m_grassHealthyColor;
-                m_detailProtoTypes[i].dryColor = m_grassDryColor;
-            }
-        }
-
-
-
-        void FillHeights(float[,] htmap, int tileX, int tileZ)
-        {
-            // 지형의 크기와 높이맵의 크기의 비율을 계산.
-            float ratio = (float)m_terrainSize / (float)m_heightMapSize;
-
-            // 높이맵의 각 픽셀에 대해 반복.
-            for (int x = 0; x < m_heightMapSize; x++)
-            {
-                // 현재 픽셀의 월드 좌표를 계산.
-                for (int z = 0; z < m_heightMapSize; z++)
-                {
-                    float worldPosX = (x + tileX * (m_heightMapSize - 1)) * ratio;
-                    float worldPosZ = (z + tileZ * (m_heightMapSize - 1)) * ratio;
-
-                    float heightMultiplier = animationCurve.Evaluate(htmap[z, x]);
-                    htmap[z, x] = (m_groundFrq + heightMultiplier) * m_groundNoise.Amplitude + m_groundNoise.Sample2D(worldPosX, worldPosZ);
-                }
-            }
-        }
-
-        void FillAlphaMap(TerrainData terrainData)
-        {
-            // m_alphaMapSize x m_alphaMapSize 크기의 2개의 스플랫맵 레이어를 위한 3차원 배열을 생성.
-            float[,,] map = new float[m_alphaMapSize, m_alphaMapSize, 2];
-
-            // 알파맵을 채우기 위해 각 좌표를 순회.
-            for (int x = 0; x < m_alphaMapSize; x++)
-            {
-                for (int z = 0; z < m_alphaMapSize; z++)
-                {
-                    // 지형 좌표를 정규화된 값(0.0 ~ 1.0)으로 변환.
-                    // 이렇게 하면 좌표가 지형의 어느 부분을 가리키는지 쉽게 알 수 있음.
-                    float normX = x * 1.0f / (m_alphaMapSize - 1);
-                    float normZ = z * 1.0f / (m_alphaMapSize - 1);
-
-                    // 정규화된 좌표에서 경사도를 계산. 
-                    // 경사도는 각도로 반환되며, 값의 범위는 0도에서 90도.
-                    float angle = terrainData.GetSteepness(normX, normZ);
-
-                    // 경사도를 알파 블렌딩 값의 범위인 0에서 1 사이의 값으로 변환.
-                    // 각도가 클수록 1에 가까워지고, 각도가 작을수록 0에 가까워짐.
-                    float frac = angle / 90.0f;
-                    map[z, x, 0] = frac;
-                    map[z, x, 1] = 1.0f - frac;
-
-                }
-            }
-            // 테레인 데이터의 알파맵 해상도를 설정.
-            terrainData.alphamapResolution = m_alphaMapSize;
-            // 계산된 알파맵 값을 테레인에 적용.
-            terrainData.SetAlphamaps(0, 0, map);
-        }
-
-        void FillTreeInstances(Terrain terrain, int tileX, int tileZ)
-        {
-            // 난수 생성기의 시드 값을 0으로 초기화. 
-            // 이렇게 하면 프로그램을 다시 실행할 때마다 동일한 결과를 얻을 수 있습니다.
-            Random.InitState(0);
-
-            // 지형 전체를 순회하면서 트리 인스턴스를 추가.
-            for (int x = 0; x < m_terrainSize; x += m_treeSpacing)
-            {
-                for (int z = 0; z < m_terrainSize; z += m_treeSpacing)
-                {
-                    // 지형의 한 변의 길이에 대한 역수를 계산.
-                    float unit = 1.0f / (m_terrainSize - 1);
-
-                    // 트리의 위치를 무작위로 조정하기 위한 오프셋을 계산.
-                    float offsetX = Random.value * unit * m_treeSpacing;
-                    float offsetZ = Random.value * unit * m_treeSpacing;
-
-                    // 트리의 위치를 정규화된 좌표계로 변환.
-                    float normX = x * unit + offsetX;
-                    float normZ = z * unit + offsetZ;
-
-                    // 경사도를 계산합니다. 이 값은 0도에서 90도 사이.
-                    float angle = terrain.terrainData.GetSteepness(normX, normZ);
-
-                    // 경사도를 0에서 1 사이의 값으로 변환.
-                    float frac = angle / 90.0f;
-
-                    // 경사가 완만한 지역에서만 트리를 심기.
-                    if (frac < 0.5f) 
-                    {
-                        // 트리의 월드 좌표를 계산.
-                        float worldPosX = x + tileX * (m_terrainSize - 1);
-                        float worldPosZ = z + tileZ * (m_terrainSize - 1);
-
-                        // 노이즈 함수를 사용하여 트리의 밀도를 결정.
-                        float noise = m_treeNoise.Sample2D(worldPosX, worldPosZ);
-                        float ht = terrain.terrainData.GetInterpolatedHeight(normX, normZ);
-
-                        // 트리의 높이를 지형 데이터에서 가져옴.
-                        if (noise > 0.0f && ht < m_terrainHeight * 0.4f)
-                        {
-                            TreeInstance temp = new TreeInstance();
-                            temp.position = new Vector3(normX, ht, normZ);
-                            temp.prototypeIndex = Random.Range(0, 3);
-                            temp.widthScale = 1;
-                            temp.heightScale = 1;
-                            temp.color = Color.white;
-                            temp.lightmapColor = Color.white;
-
-                            // 트리 인스턴스를 지형에 추가.
-                            terrain.AddTreeInstance(temp);
-                        }
-                    }
-
-                }
-            }
-            // 트리 관련 설정을 지정.
-            terrain.treeDistance = m_treeDistance;
-            terrain.treeBillboardDistance = m_treeBillboardDistance;
-            terrain.treeCrossFadeLength = m_treeCrossFadeLength;
-            terrain.treeMaximumFullLODCount = m_treeMaximumFullLODCount;
-
-        }
-
-        void FillDetailMap(Terrain terrain, int tileX, int tileZ)
-        {
-            //each layer is drawn separately so if you have a lot of layers your draw calls will increase 
-            int[,] detailMap0 = new int[m_detailMapSize, m_detailMapSize];
-            int[,] detailMap1 = new int[m_detailMapSize, m_detailMapSize];
-            int[,] detailMap2 = new int[m_detailMapSize, m_detailMapSize];
-
-            float ratio = (float)m_terrainSize / (float)m_detailMapSize;
-
-            Random.InitState(0);
-
-            for (int x = 0; x < m_detailMapSize; x++)
-            {
-                for (int z = 0; z < m_detailMapSize; z++)
-                {
-                    detailMap0[z, x] = 0;
-                    detailMap1[z, x] = 0;
-                    detailMap2[z, x] = 0;
-
-                    float unit = 1.0f / (m_detailMapSize - 1);
-
-                    float normX = x * unit;
-                    float normZ = z * unit;
-
-                    // Get the steepness value at the normalized coordinate.
-                    float angle = terrain.terrainData.GetSteepness(normX, normZ);
-
-                    // Steepness is given as an angle, 0..90 degrees. Divide
-                    // by 90 to get an alpha blending value in the range 0..1.
-                    float frac = angle / 90.0f;
-
-                    if (frac < 0.5f)
-                    {
-                        float worldPosX = (x + tileX * (m_detailMapSize - 1)) * ratio;
-                        float worldPosZ = (z + tileZ * (m_detailMapSize - 1)) * ratio;
-
-                        float noise = m_detailNoise.Sample2D(worldPosX, worldPosZ);
-
-                        if (noise > 0.0f)
-                        {
-                            float rnd = Random.value;
-                            //Randomly select what layer to use
-                            if (rnd < 0.33f)
-                                detailMap0[z, x] = 1;
-                            else if (rnd < 0.66f)
-                                detailMap1[z, x] = 1;
-                            else
-                                detailMap2[z, x] = 1;
-                        }
-                    }
-
-                }
-            }
-
-            terrain.terrainData.wavingGrassStrength = m_wavingGrassStrength;
-            terrain.terrainData.wavingGrassAmount = m_wavingGrassAmount;
-            terrain.terrainData.wavingGrassSpeed = m_wavingGrassSpeed;
-            terrain.terrainData.wavingGrassTint = m_wavingGrassTint;
-            terrain.detailObjectDensity = m_detailObjectDensity;
-            terrain.detailObjectDistance = m_detailObjectDistance;
-            terrain.terrainData.SetDetailResolution(m_detailMapSize, m_detailResolutionPerPatch);
-
-            terrain.terrainData.SetDetailLayer(0, 0, 0, detailMap0);
-            terrain.terrainData.SetDetailLayer(0, 0, 1, detailMap1);
-            terrain.terrainData.SetDetailLayer(0, 0, 2, detailMap2);
-
-        }
-
+        #endregion
     }
 }
 

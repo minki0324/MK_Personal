@@ -84,12 +84,12 @@ namespace Pathfinding {
 		public ABPath () {}
 
 		/// <summary>
-		/// Construct a path with a start and end point.
-		/// The delegate will be called when the path has been calculated.
-		/// Do not confuse it with the Seeker callback as they are sent at different times.
-		/// If you are using a Seeker to start the path you can set callback to null.
+		/// 시작점과 끝점을 사용하여 경로를 생성합니다.
+		/// 경로가 계산된 후 델리게이트가 호출됩니다.
+		/// 이것을 시커(Seeker) 콜백과 혼동하지 마세요. 이들은 다른 시간에 전송됩니다.
+		/// 경로를 시작하는 데 시커(Seeker)를 사용하는 경우 콜백을 null로 설정할 수 있습니다.
 		///
-		/// Returns: The constructed path object
+		/// 반환: 생성된 경로 객체
 		/// </summary>
 		public static ABPath Construct (Vector3 start, Vector3 end, OnPathDelegate callback = null) {
 			var p = PathPool.GetPath<ABPath>();

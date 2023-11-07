@@ -663,22 +663,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAABIIexkIDMJTgIAABEFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGFVMlu2zAQ/RWD56aQnL23Vk6cHpIYcYpcdKHFkUWYIgUu8Qb/e4cUtdQ59CTivTczb4ZDHQmXpoHCKj3XnD0rBuTHhPgz+TYZyCfY0bWSS36ATvPBma28iAbNG7VcIZ76MKNqsJoXP+VaeHGCoJO8VLp+YGvIlLEG4ZIKA0hpZX20ROg4IbsYsI/fg/9OTngqQFrQ/1M5WQhaN8C820F8nXRyPAWhxE6iJvl+7fMrIbiJRojdN6HRjDbGYRsoYJxiY8FCG1EBX1c2tt2Hv5alARuNabqfcY0TavOSX6odW03NpnX3SYWD3n6b8vkLe5EGutSqfuqrhp5sxYvNG90X1NjRVMfwbDCehhFtqdjQlYCPCuSLmmvlJEPSaudDnYHpbJSq7yyroNgMutbrGeiarzeUDjd0Cr3vMsHrVZjjVQsshQrzvvJzBY138xsNh70wMROi3sQfA+90PV6gSDxybSxSsaD07lbKaS8lj3jwcy+czZSWENBouQFJhd0vMIs9v78zblT1jHmk/qXE2pHrHsBZSIAHfZKcUQu17e/KVGr7DKZ6dVZwOU7mmRecU6akbPdr1FIXtnS6pMU4bO04+3e1yPT+upxelXdwX9xAkt5flLc39Pbmkq3uLhO6SlISdo9LbJSKRes0zgdvTQ5lJe5Z9weZzDVtwq4zTbdzfqjVyCCXpVoWGkC+thn6tkBjEXyX7IFxnNASrOUy3Dc55kSoYgMs7xPlodWHndU0H7LkpOGfynokJ1n4b+TEw/0qLzR8ctj64l2yEzn9BVBLAwQUAAAICAAASCHs9B217W0AAAB4AAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDRM9IzNNdRUEovSizIKAaKGII4pZkpIHa0kpGlaZqRSZpFqmWyWaqBoaVumrlZormZcUqShbFBYpKBoVIsUH1JZUGqX2JuKkRPQGJJRlpmXkpmXrqee1FmijvIaKXYWgBQSwECLQAUAAAICAAASCHsZCAzCU4CAAARBQAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAASCHs9B217W0AAAB4AAAACQAkAAAAAAAAAAAAAACbAgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAFMDAAAAAA==
+    dataString: UEsDBBQAAAgIAABIIewWjbEbTgIAABAFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGFVE1z2jAQ/SuMzk3HkEJCb60hpAcCE9LJxRdhrbEGWfLog68M/70r2caOc+gJ8/bt7nu7a38QLk0JqVV6oTlbKgbk54D4Z/Jt0Aaf4UR3Sm74BRrOO2c29yQaOK/UcoX40KcZVYDVPP0ld8KTIwSd5JnSxZztIFbGGoQzKgxgSCvrsyVCHwNyqhPO9e/F/w6u+JSCtKD/x3IyFbQogXm1LXkcNXR8CkSJTmpO9H3s6yshuKmFEHsug9GYlsahDSQwTtFYkOB95sB3ucU/o27yKssM2FqWpucZ1zifqir5raqhFdTsK20HKhzcxFcll1+id8MQzrQqnpuuw+DI5jzdv9JzSo3tzLQLzz7LdvJIxZ5uBbznIF/UQisnGQatdj7VGRjNOqVuzuIc0n3Lq7T2QFd+3c+w3c81eD/FghfbMPdRBWyECtOe+hzQuJk/KDhchakrIepF/DXwRnfd86kDT1wbi6G6ofTqtsppTyXzMDNvxtlYaQkBrjWXIKmw5zWWsf0F9mKdtr3IE/UvSt28jjX330sJcMuPol5orY63ZZlcHZdg8pWzgstuMR95wUHFSsrqwDqWmrSN0xlNu2k7x9nn2yKj6Tgb/cgeYZpOIBpO77KHCX2Y3LPt431Et9GQhOPjEo1Ssa6U1vPBtcm2rcRDaz4gg4WmZTh2pulxwS+F6gjkMlObVAPIVVXhZgs0NsHXks0ZxwltwFouw8LJR0KESvfAkluhJFidn6ymSVslISU/KOuRhMThs5EQD99uea3hwOHomzfFruT6D1BLAwQUAAAICAAASCHs9B217W0AAAB4AAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDRM9IzNNdRUEovSizIKAaKGII4pZkpIHa0kpGlaZqRSZpFqmWyWaqBoaVumrlZormZcUqShbFBYpKBoVIsUH1JZUGqX2JuKkRPQGJJRlpmXkpmXrqee1FmijvIaKXYWgBQSwECLQAUAAAICAAASCHsFo2xG04CAAAQBQAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAASCHs9B217W0AAAB4AAAACQAkAAAAAAAAAAAAAACbAgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAFMDAAAAAA==
     upgradeData: 
     file_cachedStartup: {fileID: 0}
     data_cachedStartup: 
     cacheStartup: 0
   showNavGraphs: 0
-  showUnwalkableNodes: 1
+  showUnwalkableNodes: 0
   debugMode: 4
   debugFloor: 0
   debugRoof: 1
   manualDebugFloorRoof: 0
-  showSearchTree: 0
+  showSearchTree: 1
   unwalkableNodeDebugSize: 0.3
   logPathResults: 1
-  maxNearestNodeDistance: 100
-  scanOnStartup: 1
+  maxNearestNodeDistance: 200
+  scanOnStartup: 0
   fullGetNearestSearch: 0
   prioritizeGraphs: 0
   prioritizeGraphsLimit: 1
@@ -1739,8 +1739,8 @@ MonoBehaviour:
   - {fileID: 3809065871840999261, guid: 413879144491b734b8819e1d4240f2d9, type: 3}
   m_seed: 0
   m_groundFrq: 0.02
-  m_treeFrq: 0.01
-  m_detailFrq: 0.001
+  m_treeFrq: 0.1
+  m_detailFrq: 0.1
   m_tilesX: 2
   m_tilesZ: 2
   m_pixelMapError: 5
@@ -1760,9 +1760,9 @@ MonoBehaviour:
   m_treeDistance: 500
   m_treeBillboardDistance: 400
   m_treeCrossFadeLength: 20
-  m_treeMaximumFullLODCount: 400
+  m_treeMaximumFullLODCount: 200
   m_detailObjectDistance: 400
-  m_detailObjectDensity: 4
+  m_detailObjectDensity: 8
   m_detailResolutionPerPatch: 32
   m_wavingGrassStrength: 0.4
   m_wavingGrassAmount: 0.2
