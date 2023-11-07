@@ -2167,8 +2167,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5531885448035456005}
-  m_LocalRotation: {x: -0, y: 0.953717, z: -0, w: -0.30070576}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0.4617488, z: -0, w: -0.8870108}
+  m_LocalPosition: {x: 9.51, y: 0, z: -10.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5531885448035158069}
@@ -2178,7 +2178,7 @@ Transform:
   - {fileID: 5531885448035158077}
   m_Father: {fileID: 7417812460977466352}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 215, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 305, z: 0}
 --- !u!95 &5531885448044947411
 Animator:
   serializedVersion: 3
@@ -3565,15 +3565,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7417812460977466355}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 9.09, y: 10, z: -9.150002}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5531885448035158053}
   - {fileID: 7417812460989067041}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &7417812460977466353
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3586,7 +3586,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.5, y: 5, z: 0.5}
-  m_Center: {x: 0, y: 3, z: 0}
+  m_Center: {x: 9.72, y: 3, z: -10.04}
 --- !u!54 &7417812460977466366
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3627,7 +3627,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7417812460989067040}
-  m_LocalRotation: {x: -0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -4804,6 +4804,8 @@ GameObject:
   - component: {fileID: 8484007906187268256}
   - component: {fileID: 8712636119360393087}
   - component: {fileID: 8892110976586525190}
+  - component: {fileID: 207171505256324622}
+  - component: {fileID: 5322564284129938029}
   m_Layer: 0
   m_Name: Wall_gate
   m_TagString: Untagged
@@ -4891,6 +4893,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Door_Ani: {fileID: 8892110976579262913}
   boxcol: {fileID: 8712636119360393087}
+--- !u!65 &207171505256324622
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8892110976586525185}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2, y: 2, z: 0.3}
+  m_Center: {x: 0, y: 1, z: -2.6}
+--- !u!65 &5322564284129938029
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8892110976586525185}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2, y: 2, z: 0.3}
+  m_Center: {x: 0, y: 1, z: 2.6}
 --- !u!1 &8892110976586525187
 GameObject:
   m_ObjectHideFlags: 0

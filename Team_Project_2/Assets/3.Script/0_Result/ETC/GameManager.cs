@@ -16,6 +16,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject Option;
     private bool isEnableOp = false;
 
+    public int Team_Player = 1;
+    public int Team_2 = 2;
+    public int Team_3 = 3;
+    public int Team_4 = 4;
+
     [Header("게임 플레이")]
     public float currentTime = 0f;  // 게임이 시작하고 지난 시간
     public float EndTime = 1800f;   // 게임 시간은 30분

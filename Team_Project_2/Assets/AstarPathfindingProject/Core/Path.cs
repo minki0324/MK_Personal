@@ -6,15 +6,15 @@ using System.Collections.Generic;
 
 namespace Pathfinding {
 	/// <summary>
-	/// Provides additional traversal information to a path request.
-	/// See: turnbased (view in online documentation for working links)
+	/// 경로 요청에 대한 추가적인 이동 정보를 제공합니다.
+	/// 참조: 턴 기반 (온라인 문서에서 작동 링크 확인)
 	/// </summary>
 	public interface ITraversalProvider {
 		bool CanTraverse(Path path, GraphNode node);
 		uint GetTraversalCost(Path path, GraphNode node);
 	}
 
-	/// <summary>Convenience class to access the default implementation of the ITraversalProvider</summary>
+	/// <summary>ITraversalProvider의 기본 구현에 액세스하는 편리한 클래스</summary>
 	public static class DefaultITraversalProvider {
 		public static bool CanTraverse (Path path, GraphNode node) {
 			return node.Walkable && (path.enabledTags >> (int)node.Tag & 0x1) != 0;
@@ -25,104 +25,104 @@ namespace Pathfinding {
 		}
 	}
 
-	/// <summary>Base class for all path types</summary>
+	/// <summary>모든 경로 유형에 대한 기본 클래스</summary>
 	public abstract class Path : IPathInternals {
 #if ASTAR_POOL_DEBUG
 		private string pathTraceInfo = "";
 		private List<string> claimInfo = new List<string>();
 		~Path() {
-			Debug.Log("Destroying " + GetType().Name + " instance");
+			Debug.Log(GetType().Name + " 인스턴스 파괴 중");
 			if (claimed.Count > 0) {
-				Debug.LogWarning("Pool Is Leaking. See list of claims:\n" +
-					"Each message below will list what objects are currently claiming the path." +
-					" These objects have removed their reference to the path object but has not called .Release on it (which is bad).\n" + pathTraceInfo+"\n");
+				Debug.LogWarning("풀이 누수되고 있습니다. 요청 경로에 대한 참석 목록:\n" +
+					"아래의 각 메시지는 현재 경로에 대한 참조를 제거했지만 .Release를 호출하지 않은 (잘못된 동작) 객체 목록을 나열합니다.\n" + pathTraceInfo+"\n");
 				for (int i = 0; i < claimed.Count; i++) {
-					Debug.LogWarning("- Claim "+ (i+1) + " is by a " + claimed[i].GetType().Name + "\n"+claimInfo[i]);
+					Debug.LogWarning("- 참석 " + (i+1) + "번은 " + claimed[i].GetType().Name + " 에 의해 발생하였습니다.\n" + claimInfo[i]);
 				}
 			} else {
-				Debug.Log("Some scripts are not using pooling.\n" + pathTraceInfo + "\n");
+				Debug.Log("일부 스크립트가 풀링을 사용하지 않고 있습니다.\n" + pathTraceInfo + "\n");
 			}
 		}
 #endif
 
-		/// <summary>Data for the thread calculating this path</summary>
+		/// <summary>이 경로를 계산하는 데 사용되는 스레드의 데이터</summary>
 		protected PathHandler pathHandler;
 
 		/// <summary>
-		/// Callback to call when the path is complete.
-		/// This is usually sent to the Seeker component which post processes the path and then calls a callback to the script which requested the path
+		/// 경로가 완료될 때 호출할 콜백입니다.
+		/// 일반적으로 경로를 후처리하고 그 후에 경로를 요청한 스크립트에 대한 콜백을 호출하는 Seeker 구성 요소로 전송됩니다.
 		/// </summary>
 		public OnPathDelegate callback;
 
 		/// <summary>
-		/// Immediate callback to call when the path is complete.
-		/// Warning: This may be called from a separate thread. Usually you do not want to use this one.
+		/// 경로가 완료될 때 호출할 즉각적인 콜백입니다.
+		/// 경고: 이 콜백은 별도의 스레드에서 호출될 수 있습니다. 일반적으로 이 방법을 사용하여 현재 경로가 계산되었는지 확인하지 않는 것이 좋습니다.
 		///
-		/// See: callback
+		/// 참조: callback
 		/// </summary>
 		public OnPathDelegate immediateCallback;
 
-		/// <summary>Returns the state of the path in the pathfinding pipeline</summary>
+		/// <summary>경로의 경로 찾기 파이프라인 상태를 반환합니다.</summary>
 		public PathState PipelineState { get; private set; }
 		System.Object stateLock = new object();
 
 		/// <summary>
-		/// Provides additional traversal information to a path request.
-		/// See: turnbased (view in online documentation for working links)
+		/// 경로 요청에 대한 추가적인 이동 정보를 제공합니다.
+		/// 참조: 턴 기반 (온라인 문서에서 작동 링크 확인)
 		/// </summary>
 		public ITraversalProvider traversalProvider;
 
 
-		/// <summary>Backing field for <see cref="CompleteState"/></summary>
+		/// <summary><see cref="CompleteState"/>의 백업 필드</summary>
 		protected PathCompleteState completeState;
 
 		/// <summary>
-		/// Current state of the path.
-		/// \bug This may currently be set to Complete before the path has actually been fully calculated. In particular the vectorPath and path lists may not have been fully constructed.
-		/// This can lead to race conditions when using multithreading. Try to avoid using this method to check for if the path is calculated right now, use <see cref="IsDone"/> instead.
+		/// 현재 경로의 상태입니다.
+		/// \bug 현재 경로가 실제로 완전히 계산되기 전에도 이미 완료 상태로 설정될 수 있습니다. 특히 vectorPath 및 path 목록이 완전히 구성되지 않은 경우입니다.
+		/// 이로 인해 다중 스레딩을 사용할 때 경로가 계산되지 않았을 때도 다른 스레드에서 상태를 확인할 수 있는 경쟁 조건이 발생할 수 있습니다. 현재 상태를 확인하는 데는 이 메서드를 사용하지 않으려고 노력하십시오. 대신 <see cref="IsDone"/>을 사용하십시오.
 		/// </summary>
 		public PathCompleteState CompleteState {
 			get { return completeState; }
 			protected set {
-				// Locking is used to avoid multithreading race conditions
-				// in which the error state is set on the main thread to cancel the path and then a pathfinding thread marks the path as
-				// completed which would replace the error state (if a lock and check would not have been used).
+				// 이 락킹(Locking)은 다중 스레딩 경쟁 조건을 방지하기 위해 사용됩니다.
+				// 주 스레드(main thread)에서 경로를 취소하기 위해 오류 상태(error state)를 설정하고
+				// 동시에 경로 찾기 스레드(pathfinding thread)에서 경로를 계산하여
+				// 완료된(completed) 상태로 표시할 때 발생하는 상황을 방지하기 위한 것입니다.
 				lock (stateLock) {
-					// Once the path is put in the error state, it cannot be set to any other state
+					// 한 번 경로가 오류 상태로 설정되면 더 이상 다른 상태로 설정할 수 없습니다
 					if (completeState != PathCompleteState.Error) completeState = value;
 				}
 			}
 		}
 
 		/// <summary>
-		/// If the path failed, this is true.
-		/// See: <see cref="errorLog"/>
-		/// See: This is equivalent to checking path.CompleteState == PathCompleteState.Error
+		/// 경로가 실패했으면 true입니다.
+		/// 참조: <see cref="errorLog"/>
+		/// 이는 path.CompleteState == PathCompleteState.Error를 확인하는 것과 동등합니다.
 		/// </summary>
 		public bool error { get { return CompleteState == PathCompleteState.Error; } }
 
 		/// <summary>
-		/// Additional info on why a path failed.
-		/// See: <see cref="AstarPath.logPathResults"/>
+		/// 경로 실패에 대한 추가 정보입니다.
+		/// 참조: <see cref="AstarPath.logPathResults"/>
 		/// </summary>
 		public string errorLog { get; private set; }
 
 		/// <summary>
-		/// Holds the path as a Node array. All nodes the path traverses.
-		/// This may not be the same nodes as the post processed path traverses.
+		/// 경로를 Node 배열로 보유합니다. 경로가 통과하는 모든 노드입니다.
+		/// 이것은 후처리된 경로가 통과하는 노드와 다를 수 있습니다.
 		/// </summary>
 		public List<GraphNode> path;
 
-		/// <summary>Holds the (possibly post processed) path as a Vector3 list</summary>
+		/// <summary>경로를 Vector3 목록으로 보유합니다 (후처리될 수 있음)</summary>
 		public List<Vector3> vectorPath;
 
-		/// <summary>The node currently being processed</summary>
+		/// <summary>현재 처리 중인 노드</summary>
 		protected PathNode currentR;
 
-		/// <summary>How long it took to calculate this path in milliseconds</summary>
+		/// <summary>이 경로를 계산하는 데 걸린 시간 (밀리초)</summary>
 		public float duration;
 
-		/// <summary>Number of nodes this path has searched</summary>
+		/// <summary>이 경로에서 탐색한 노드 수</summary>
 		public int searchedNodes { get; protected set; }
 
 		/// <summary>
