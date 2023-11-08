@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 8dd2f17b6e3f8174390967bc55ead836, type: 2}
   m_HaloStrength: 0.501
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.49096578, g: 0.681848, b: 0.785983, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -663,7 +663,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAABIIewWjbEbTgIAABAFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGFVE1z2jAQ/SuMzk3HkEJCb60hpAcCE9LJxRdhrbEGWfLog68M/70r2caOc+gJ8/bt7nu7a38QLk0JqVV6oTlbKgbk54D4Z/Jt0Aaf4UR3Sm74BRrOO2c29yQaOK/UcoX40KcZVYDVPP0ld8KTIwSd5JnSxZztIFbGGoQzKgxgSCvrsyVCHwNyqhPO9e/F/w6u+JSCtKD/x3IyFbQogXm1LXkcNXR8CkSJTmpO9H3s6yshuKmFEHsug9GYlsahDSQwTtFYkOB95sB3ucU/o27yKssM2FqWpucZ1zifqir5raqhFdTsK20HKhzcxFcll1+id8MQzrQqnpuuw+DI5jzdv9JzSo3tzLQLzz7LdvJIxZ5uBbznIF/UQisnGQatdj7VGRjNOqVuzuIc0n3Lq7T2QFd+3c+w3c81eD/FghfbMPdRBWyECtOe+hzQuJk/KDhchakrIepF/DXwRnfd86kDT1wbi6G6ofTqtsppTyXzMDNvxtlYaQkBrjWXIKmw5zWWsf0F9mKdtr3IE/UvSt28jjX330sJcMuPol5orY63ZZlcHZdg8pWzgstuMR95wUHFSsrqwDqWmrSN0xlNu2k7x9nn2yKj6Tgb/cgeYZpOIBpO77KHCX2Y3LPt431Et9GQhOPjEo1Ssa6U1vPBtcm2rcRDaz4gg4WmZTh2pulxwS+F6gjkMlObVAPIVVXhZgs0NsHXks0ZxwltwFouw8LJR0KESvfAkluhJFidn6ymSVslISU/KOuRhMThs5EQD99uea3hwOHomzfFruT6D1BLAwQUAAAICAAASCHs9B217W0AAAB4AAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDRM9IzNNdRUEovSizIKAaKGII4pZkpIHa0kpGlaZqRSZpFqmWyWaqBoaVumrlZormZcUqShbFBYpKBoVIsUH1JZUGqX2JuKkRPQGJJRlpmXkpmXrqee1FmijvIaKXYWgBQSwECLQAUAAAICAAASCHsFo2xG04CAAAQBQAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAASCHs9B217W0AAAB4AAAACQAkAAAAAAAAAAAAAACbAgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAFMDAAAAAA==
+    dataString: UEsDBBQAAAgIAABIIey7tkkMTgIAABAFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGFVE1z2jAQ/SuMzk3HkISE3lpDSA8EJrSTiy/CWmMNsuTRB5/Df+9KtrHjHHrCvH27+97u2hfCpSkhtUrPNWcLxYD8GBD/TL4N2uArHOlWyTU/Q8P54MzmnkQD551arhAf+jSjCrCapz/lVnhyhKCTPFO6mLEtxMpYg3BGhQEMaWV9tkToMiDHOuFU/5797+CKTylIC/p/LCdTQYsSmFfbkh+iho5PgSjRSc2Jvj/6+koIbmohxJ7KYDSmpXFoAwmMUzQWJHifOfBtbvHPqJu8zDIDtpal6WnKNc6nqkp+qWpoBTW7StueCgc38VXJxZfo3TCEM62K16brMDiyOU937/SUUmM7M+3C08+ynTxQsaMbAR85yDc118pJhkGrnU91BkbTTqmbsziHdNfyKq090JVf9zNs93MN3o+x4MUmzH1UAWuhwrQnPgc0buY3Cg5XYepKiHoRfw38odvu+dSBF66NxVDdUHp1G+W0p5JZmJk342ystIQA15pLkFTY0wrL2P4Ce7FO217khfoXpW5ex5r776UEuOVHUS+0UofbskyuDgsw+dJZwWW3mI+84aBiJWV1YB1LTdra6Yym3bSt4+zzbZHR5DEbPWTPMEnHEA0nd9nTmD6N79nm+T6im2hIwvFxiUapWFVK6/ng2mTbVuKhNR+QwVzTMhw70/Qw5+dCdQRymal1qgHksqpwswUam+BryWaM44TWYC2XYeHkkhCh0h2w5FYoCVZnR6tp0lZJSMn3ynokIXH4bCTEw7dbXmnYczj45k2xK7n+A1BLAwQUAAAICAAASCHs9B217W0AAAB4AAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDRM9IzNNdRUEovSizIKAaKGII4pZkpIHa0kpGlaZqRSZpFqmWyWaqBoaVumrlZormZcUqShbFBYpKBoVIsUH1JZUGqX2JuKkRPQGJJRlpmXkpmXrqee1FmijvIaKXYWgBQSwECLQAUAAAICAAASCHsu7ZJDE4CAAAQBQAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAASCHs9B217W0AAAB4AAAACQAkAAAAAAAAAAAAAACbAgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAFMDAAAAAA==
     upgradeData: 
     file_cachedStartup: {fileID: 0}
     data_cachedStartup: 
@@ -1533,7 +1533,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1738,12 +1738,12 @@ MonoBehaviour:
   - {fileID: 3273941092057733186, guid: af2b3d55998814e4eb020831861bf513, type: 3}
   - {fileID: 3809065871840999261, guid: 413879144491b734b8819e1d4240f2d9, type: 3}
   m_seed: 0
-  m_groundFrq: 0.02
+  m_groundFrq: 0.01
   m_treeFrq: 0.1
   m_detailFrq: 0.1
   m_tilesX: 2
   m_tilesZ: 2
-  m_pixelMapError: 5
+  m_pixelMapError: 6
   m_baseMapDist: 100
   animationCurve:
     serializedVersion: 2
@@ -1751,10 +1751,10 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  m_heightMapSize: 50
-  m_alphaMapSize: 50
+  m_heightMapSize: 128
+  m_alphaMapSize: 512
   m_terrainSize: 512
-  m_terrainHeight: 256
+  m_terrainHeight: 128
   m_detailMapSize: 128
   m_treeSpacing: 20
   m_treeDistance: 500
@@ -1771,7 +1771,7 @@ MonoBehaviour:
   m_grassHealthyColor: {r: 1, g: 1, b: 1, a: 1}
   m_grassDryColor: {r: 1, g: 1, b: 1, a: 1}
   Base_PreFabs:
-  - {fileID: 7417812460977466355, guid: 876636b9c1216ba47834af948354f747, type: 3}
+  - {fileID: 6961341213275169406, guid: 876636b9c1216ba47834af948354f747, type: 3}
   Ply_Num: 4
   Base_Num: 0
   flag:
@@ -3581,7 +3581,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -4217,7 +4217,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -6057,7 +6057,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!223 &2794349096839805264
 Canvas:
   m_ObjectHideFlags: 0
@@ -22191,7 +22191,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &7734058830170692896
 MonoBehaviour:
   m_ObjectHideFlags: 0

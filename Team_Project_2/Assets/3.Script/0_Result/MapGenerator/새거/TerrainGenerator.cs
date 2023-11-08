@@ -78,6 +78,7 @@ namespace SimpleProceduralTerrainProject
         public GameObject[] flag;
         public int flag_Num;
         List<Vector3> flagPositions_List = new List<Vector3>();
+        private Dictionary<string, List<Vector3>> cachedPaths = new Dictionary<string, List<Vector3>>();
 
         //Private
         private FractalNoise m_groundNoise, m_mountainNoise, m_treeNoise, m_detailNoise;
@@ -134,26 +135,33 @@ namespace SimpleProceduralTerrainProject
         {
             for (int i = 0; i < flagPositions_List.Count; i++)
             {
-                for (int j = 0; j < flagPositions_List.Count; j++)
+                // j를 i + 1로 시작하여, i와 j가 같지 않게 하고, 각 플래그 쌍을 한 번만 비교하도록 함
+                for (int j = i + 1; j < flagPositions_List.Count; j++)
                 {
-                    // 자기 자신으로의 경로는 제외합니다.
-                    if (i != j)
+                    Vector3 startFlag = flagPositions_List[i];
+                    Vector3 endFlag = flagPositions_List[j];
+
+                    string pathKey = i.ToString() + "-" + j.ToString();  // 경로를 식별하는 고유한 키 생성
+
+                    // 이미 탐색한 경로인지 확인
+                    if (!cachedPaths.ContainsKey(pathKey))
                     {
-                        Vector3 startFlag = flagPositions_List[i];
-                        Vector3 endFlag = flagPositions_List[j];
-
-                        Debug.Log("i: " + i + ", j: " + j);
-                        Debug.Log("i : " + i + "StartFlag: " + startFlag + " j : " + j +  "EndFlag " + endFlag);
-
                         var path = Pathfinding(startFlag, endFlag);
                         if (path != null && path.Count > 0)
                         {
+                            cachedPaths[pathKey] = path;  // 경로를 캐시에 저장
                             DrawRoad(path);
+                        }
+                        // 반대 방향의 경로도 저장해야 한다면 여기에 추가
+                        string reversePathKey = j.ToString() + "-" + i.ToString();
+                        if (!cachedPaths.ContainsKey(reversePathKey))
+                        {
+                            cachedPaths[reversePathKey] = path;  // 경로를 캐시에 저장
                         }
                     }
                 }
             }
-            for(int i = 0; i < flagPositions_List.Count; i++)
+            for (int i = 0; i < flagPositions_List.Count; i++)
             {
                 Debug.Log(i + "번째 좌표는 : " + flagPositions_List[i]);
             }
@@ -181,7 +189,7 @@ namespace SimpleProceduralTerrainProject
                     int mapZ = Mathf.FloorToInt((position.z - terrain.transform.position.z) / terrainData.size.z * alphaMapHeight);
 
                     // 도로 폭을 설정합니다.
-                    int roadWidth = 1;  // 이 값은 도로의 폭에 따라 조절할 수 있습니다.
+                    int roadWidth = 3;  // 이 값은 도로의 폭에 따라 조절할 수 있습니다.
 
                     // 도로의 폭만큼 알파맵을 수정합니다.
                     for (int x = mapX - roadWidth / 2; x <= mapX + roadWidth / 2; x++)
@@ -220,6 +228,11 @@ namespace SimpleProceduralTerrainProject
             // 이를 위해선 먼저 Pathfinding 메소드에서 도로 경로를 생성해야 합니다.
             FindPathsFromBasesToFlags();
             FindPathsBetweenFlags();
+            for(int i = 0; i < terrainList.Count; i++)
+            {
+                terrainList[i].GetComponent<TerrainCollider>().enabled = false;
+                terrainList[i].GetComponent<TerrainCollider>().enabled = true;
+            }
         }
         #endregion
         #region 길찾기 알고리즘
@@ -296,8 +309,6 @@ namespace SimpleProceduralTerrainProject
                     FillTreeInstances(m_terrain[x, z], x, z);
                     FillDetailMap(m_terrain[x, z], x, z);
                     terrainList.Add(m_terrain[x, z]);
-                    m_terrain[x, z].GetComponent<TerrainCollider>().enabled = false;
-                    m_terrain[x, z].GetComponent<TerrainCollider>().enabled = true;
                 }
             }
 
@@ -605,8 +616,8 @@ namespace SimpleProceduralTerrainProject
                 for (int attempt = 0; attempt < maxAttempts; attempt++)
                 {
                     // 중앙에서 200x200 범위 내의 랜덤한 위치 생성
-                    float posX = Random.Range(-200f, 200f);
-                    float posZ = Random.Range(-200f, 200f);
+                    float posX = Random.Range(-170f, 170f);
+                    float posZ = Random.Range(-170f, 170f);
 
                     // 월드 좌표계를 테레인 배열 인덱스로 변환
                     int terrainIndexX = Mathf.FloorToInt((posX + m_tilesX * m_terrainSize * 0.5f) / m_terrainSize);
@@ -618,7 +629,7 @@ namespace SimpleProceduralTerrainProject
                         Terrain terrain = m_terrain[terrainIndexX, terrainIndexZ];
 
 
-                        baseCampPosition = new Vector3(posX, 10, posZ);
+                        baseCampPosition = new Vector3(posX, 5, posZ);
                         bool tooCloseToOtherBases = false;
                         bool tooClostToFlag = false;
 
